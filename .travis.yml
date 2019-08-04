@@ -1,0 +1,22 @@
+sudo: required
+services:
+  - docker
+
+  before_install:
+    - docker build -t mireli/MarthasSalsa -f Dockerfile.dev .
+
+  script:
+    - docker run -e CI=true mireli/MarthasSalsa npm run test -- -- coverage
+  
+  deploy:
+    provider: elasticbeanstalk
+    region: 
+    app: "MarthasSalsa"
+    env:
+    bucket_name:
+    bucket_path:
+    on:
+      branch: master
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key:
+      secure: "@AWS_SECRET_KEY"
